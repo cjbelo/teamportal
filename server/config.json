@@ -1,0 +1,7 @@
+{
+  "email": {
+    "user": "cjsmtp@gmail.com",
+    "pass": "localsmtpsender"
+  },
+  "secretKey": "p@ssKey"
+}

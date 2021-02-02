@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-function App() {
+import Main from "./containers/Main";
+import Profile from "./containers/Profile";
+import ForgotPassword from "./containers/ForgotPassword";
+import NotFound from "./containers/NotFound";
+import { useDispatch } from "react-redux";
+
+import { GET_USER } from "./reducers/userAction";
+import { Get } from "./api";
+
+const App = () => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    Get("/user", true).then((res) => {
+      if (!res.data.error) {
+        dispatch({ type: GET_USER, payload: res.data.userData });
+      }
+      setLoading(false);
+    });
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      {loading ? (
+        <div />
+      ) : (
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Main} />
+            <Route
+              exact
+              path={["/profile", "/profile/:page"]}
+              component={Profile}
+            />
+            <Route exact path="/forgot-password" component={ForgotPassword} />
+            <Route component={NotFound} />
+          </Switch>
+        </Router>
+      )}
+    </React.Fragment>
   );
-}
+};
 
 export default App;
